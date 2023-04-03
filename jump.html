@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dinosaur Jumping Game</title>
+  <style>
+    #dinosaur {
+      width: 50px;
+      height: 50px;
+      background-color: green;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+    #obstacle {
+      width: 30px;
+      height: 30px;
+      background-color: red;
+      position: absolute;
+      bottom: 50px;
+      right: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="dinosaur"></div>
+  <div id="obstacle"></div>
+
+  <script>
+    let dinosaur = document.getElementById('dinosaur');
+    let obstacle = document.getElementById('obstacle');
+    let jumpCount = 0;
+
+    function jump() {
+      if (jumpCount < 2) {
+        jumpCount++;
+        dinosaur.style.bottom = parseInt(dinosaur.style.bottom) + 100 + 'px';
+        setTimeout(function() {
+          dinosaur.style.bottom = parseInt(dinosaur.style.bottom) - 100 + 'px';
+          jumpCount--;
+        }, 500);
+      }
+    }
+
+    function moveObstacle() {
+      let obstaclePosition = parseInt(obstacle.style.right);
+      if (obstaclePosition > window.innerWidth) {
+        obstaclePosition = -30;
+      }
+      obstacle.style.right = obstaclePosition + 5 + 'px';
+
+      if (isCollision()) {
+        alert('Game Over!');
+        location.reload();
+      }
+    }
+
+    function isCollision() {
+      let dinosaurRect = dinosaur.getBoundingClientRect();
+      let obstacleRect = obstacle.getBoundingClientRect();
+      return !(
+        dinosaurRect.bottom < obstacleRect.top ||
+        dinosaurRect.top > obstacleRect.bottom ||
+        dinosaurRect.right < obstacleRect.left ||
+        dinosaurRect.left > obstacleRect.right
+      );
+    }
+
+    document.addEventListener('keydown', function(event) {
+      if (event.keyCode === 32) {
+        jump();
+      }
+    });
+
+    setInterval(moveObstacle, 10);
+  </script>
+</body>
+</html>
